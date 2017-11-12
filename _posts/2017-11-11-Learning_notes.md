@@ -3,9 +3,9 @@ layout: post
 title: Learning Notes on Deep Learning
 ---
 
-# Learning Notes on Deep Learning
+This documents records the main takeaways during my learning of the theories and applications of Deep Learning.
 
-This documents records the main takeaways during my learning of Deep Learning.
+# Learning Notes on Deep Learning
 
 ## Tensorflow
 

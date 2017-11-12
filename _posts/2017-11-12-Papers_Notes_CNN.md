@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Machine Learning Papers Notes (CNN)
+title: Quick Notes on Deep Learning (CNN) Papers
 ---
+
+This note covers advancement in computer vision/image processing powered by convolutional neural network (CNN) in increasingly more challenging topics from **Image Classification** to **Object Detection** to **Segmentation**. 
 
 # Machine Learning Papers Notes (CNN)
 Compiled by Patrick Liu 
-
-This note covers advancement in computer vision/image processing powered by convolutional neural network (CNN) in increasingly more challenging topics from **Image Classification** to **Object Detection** to **Segmentation**. 
 
 <!-- vim-markdown-toc GFM -->
 
