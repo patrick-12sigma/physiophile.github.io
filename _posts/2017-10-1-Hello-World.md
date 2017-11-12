@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Hello World
-date: 0000-0-0
+date: 2017-1-1
 categories: [Others]
 ---
 
