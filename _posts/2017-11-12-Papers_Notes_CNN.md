@@ -246,7 +246,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     $$
     L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^*) + \lambda \frac{1}{N_{reg}} \sum_i p_i^* L_{reg}(t_i, t_i^*)
     $$
-    where groundtruth label $p_i^*$ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $t_i^*$ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $L_{reg} = R(t_i - t_i^*)$ where $R$ is the robust loss function (smooth $L_1$, Huber).
+    where groundtruth label $ p_i^* $ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $ t_i^* $ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $ L_{reg} = R(t_i - t_i^*) $ where $R$ is the robust loss function (smooth $L_1$, Huber).
   - Fine-tuning VGG (13 conv + 3 FC) from conv3_1 and up as the shallower layers are very generic. Fine-tuning whole network for ZF (5 + 3).
   - 4-step Alternating training:
     0. Fine-tune a ImageNet-pretrained model for RPN.
@@ -597,7 +597,7 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Foveal field of view: 1x, 1.5x, 2x, 4x of the original proposal box all centered on the object proposal. For each FOV, ROI pooling is used to generate the fixed sized feature maps. (the architecture diagram is a bit misleading). **Multiple ROI for pooling.**
   - Integral loss: 
     - PASCAL and ImageNet only considers if the bb has over 0.5 IOU with the GT, while COCO averages AP cross IOU threshold between .50 and .95. **COCO incentivizes better object localization.**
-    - Ideally proposals with higher overlap to the GT should be scored more highly. Therefore, instead of a single $L_{cls}(p, k^*) = -\log p(k^*)$, classification loss for the GT class $k^*$ at IOU threshold $u=0.5$, 
+    - Ideally proposals with higher overlap to the GT should be scored more highly. Therefore, instead of a single $ L_{cls}(p, k^*) = -\log p(k^*) $, classification loss for the GT class $k^*$ at IOU threshold $u=0.5$, 
       $$ \int_{50}^{100} L_{cls}(p, k_u^*) du $$
       In this formulation better localized objects are counted more times. For practical reasons (very few positive training samples when u>0.75), the integration is approximated as summation $\sum_u$ where $u \in \{50, 55, ..., 75\}$. 
   - Each object proposal has n GT labels $k_u^*$, one per threshold $u$. Each term $p_u$ is predicted by a separate classifier head.
