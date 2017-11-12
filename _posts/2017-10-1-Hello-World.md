@@ -15,4 +15,7 @@ Pictures can be inserted.
 
 ## Equations
 Math equations should work too!
-$$ e^{i\pi} + 1 = 0$$
+$$ e^{i\pi} + 1 = 0 $$
+
+How about this is sigma $\sigma$.
+End of file?
