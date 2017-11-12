@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Quick Notes on Deep Learning (CNN) Papers
+date: 2017-11-13
+categories: [Deep Learning, CNN]
 ---
 
 This note covers advancement in computer vision/image processing powered by convolutional neural network (CNN). 

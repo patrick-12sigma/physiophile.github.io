@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Learning Notes on Deep Learning
+date: 2017-11-13
+categories: [Deep Learning]
 ---
 
 This documents records the main takeaways during my learning of the theories and applications of Deep Learning.
@@ -39,7 +41,7 @@ First read the [FAQ](https://www.tensorflow.org/programmers_guide/faq#running_a_
 	```
 - Train the model.
 
-	```
+	```python
 	batch_x, batch_label = data.next_batch()
 	with tf.Session() as sess:
 		sess.run(tf.global_variables_initializer())

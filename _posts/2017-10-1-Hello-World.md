@@ -1,11 +1,11 @@
 ---
 layout: post
-title: This is my first post!
+title: Hello World
+date: 0000-0-0
+categories: [Others]
 ---
 
-This is my first post! 
-
-I would like to experiment different new ideas. 
+Sand box to try out new ideas. 
 
 This is also my playground for testing out new ideas. 
 
@@ -17,6 +17,4 @@ Pictures can be inserted.
 Math equations should work too!
 $$ e^{i\pi} + 1 = 0 $$
 
-How about this is sigma $\sigma$.
-
-This is the end of This file.
+How about some greek? This is 12$\sigma$.
