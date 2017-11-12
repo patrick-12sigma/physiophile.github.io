@@ -17,10 +17,10 @@ I recently discovered Jekyll which allows the creation of static sites with Mark
 See the markdown editor's syntax highlighting is confused about the use of underscores ("_") in the LaTeX block and mistakenly treat them as emphasis markers. Fortunately MacDown renders it correctly as subscript marker.
 ![](../images/macdown_latex.png)
 
-Jekyll uses Kramdown as the markdown converter and at first I was really disappointed at the converted result, when "_", "*", "|" in LaTeX blocks are mistakenly interpreted as markdown or html markers. A quick googling yields good results, and they also provided good workaround.
+Jekyll uses Kramdown as the markdown converter and at first I was really disappointed at the converted result, when "`_`", "`*`", "`|`" in LaTeX blocks are mistakenly interpreted as markdown or html markers. A quick googling yields good results, and they also provided good workaround.
 
 - [Markdown interferes with Mathjax](https://github.com/mathjax/MathJax/issues/329)
-- [Use \vert to replace | in LaTeX](https://github.com/gettalong/kramdown/issues/46)
+- [Use \vert to replace `|` in LaTeX](https://github.com/gettalong/kramdown/issues/46)
 - [Use back ticks to escape](http://gohugo.io/content-management/formats/#issues-with-markdown:d97e838dbdddd8f0d2665b07f195e51f)
 - [Use hugo](https://takuti.me/note/hugo-markdown-and-mathjax/)
 
