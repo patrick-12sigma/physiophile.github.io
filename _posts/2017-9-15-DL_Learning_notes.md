@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Learning Notes on Deep Learning
-date: 2017-11-13
+date: 2017-9-15
 categories: [Deep Learning]
 ---
 

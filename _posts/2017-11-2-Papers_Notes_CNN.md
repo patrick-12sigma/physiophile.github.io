@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Quick Notes on Deep Learning (CNN) Papers
-date: 2017-11-13
+date: 2017-11-2
 categories: [Deep Learning, CNN]
 ---
 

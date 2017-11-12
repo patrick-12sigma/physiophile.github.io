@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The Markdown and LaTeX conflicts
-date: 2017-11-10
+date: 2017-11-12
 categories: [Markdown, LaTeX]
 ---
 
