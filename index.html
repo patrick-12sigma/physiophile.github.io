@@ -9,8 +9,8 @@ layout: default
       <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
 
       <div class="entry">
-       {% if post.content contains '<!--break-->' %}
-          {{ post.content | split:'<!--break-->' | first }}    
+       {% if post.content contains '<!-- break -->' %}
+          {{ post.content | split:'<!-- break -->' | first }}    
        {% else %}
           {{ post.excerpt }}
        {% endif %}

@@ -5,7 +5,7 @@ title: Quick Notes on Deep Learning (CNN) Papers
 
 This note covers advancement in computer vision/image processing powered by convolutional neural network (CNN). 
 
-<!--break-->
+<!-- break -->
 
 The papers are listed in in increasingly more challenging topics from **Image Classification** to **Object Detection** to **Segmentation**. 
 
