@@ -33,8 +33,8 @@ Evolution from AlexNet, VGGNet, GoogLeNet (Inception) to ResNet.
     - **Dropout**: neurons that are dropped out do not contribute to forward pass nor back-propagation. This reduces complex co-adaptations of neurons, as a neuron cannot reply on the presence of particular other neurons. It roughly doubles the training time when dropout probability p=0.5. 
   - Loss function: multinomial logistic regression objective (softmax)
   - Learning update with momentum 0.9 and weight decay 0.0005
-  - 1. $ v_{i+1} := 0.9 v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \left< \frac{\partial L}{\partial w} | _ {w_i} \right>_ {D_i} $
-  - 2. $ w_{i+1} := w_i + v_{i+1} $
+  - 1: $ v_{i+1} := 0.9 v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \left< \frac{\partial L}{\partial w} \vert _ {w_i} \right>_ {D_i} $
+  - 2: $ w_{i+1} := w_i + v_{i+1} $
   - Learning schedule: divide learning rate by 10 when validation error rate stopped improving 
 - Results:
   - 1st conv layers learned a variety of frequency- and orientation-selective kernels and colored blobs
