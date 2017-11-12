@@ -41,7 +41,7 @@ Evolution from AlexNet, VGGNet, GoogLeNet (Inception) to ResNet.
   - Specialization of filters on two GPUs due to restricted connectivity
   - Feature activations in the last hidden layer (4096-dimensional vectors) provide a good representation of image similarities in the image. 
   - **Efficient image retrieval** can be realized through this vector, or even compressed short binary code using autoencoders. This is better than grouping low level features in the image domain as similar patterns of edges does not mean *semantic* similarity.
-- [tidbits] 
+- Tidbits 
   - ImageNet's labels were gathered using Amazon's mechanical turk.
   - Due to genuine ambiguity of the intended focus of the images, **top-5 error rate** is more representative than **top-1 error rate**.
 
@@ -84,8 +84,8 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - Two ways to alleviate the problem of limited availability of annotated data: 
   - data augmentation
   - **supervised** pre-training prior to domain specific fine-tuning (transfer learning).
-- [Tidbits] Before CNN dominates ILSVRC, ensemble systems that combine multiple low-level image features (HOG-like, e.g.) with high-level context were taking the lead. In retrospect, this also generates hierarchical features, the same as CNN.
-- [Tidbits] AlexNet's twists on top of LeCun's CNN: use of ReLu activation function and dropout regularization.
+- Tidbits Before CNN dominates ILSVRC, ensemble systems that combine multiple low-level image features (HOG-like, e.g.) with high-level context were taking the lead. In retrospect, this also generates hierarchical features, the same as CNN.
+- Tidbits AlexNet's twists on top of LeCun's CNN: use of ReLu activation function and dropout regularization.
 - R-CNN explores the question of how to transfer CNN classification results to object detection.
 - Architecture:
   - Region proposal: ~2000 (rectangular) category-independent regions for each input image are proposed on the fly by **selective search** (see [implementation in Python here](http://www.learnopencv.com/selective-search-for-object-detection-cpp-python/)).
@@ -190,7 +190,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     L(p, u, t^u, v) = L_{cls} (p, u) + \lambda [u \ge 1] L_{loc} (t^u, v)
     \\]
     - $L_{cls}(p, u) = -\log p_u$ (log loss function, [special case of cross entropy](https://jamesmccaffrey.wordpress.com/2016/09/25/log-loss-and-cross-entropy-are-almost-the-same/))
-    - $[statement]$ is the Iverson bracket which evaluates to 1 when statement is true. There is no loss for the catch-all background class ($u=0$).
+    - $[\text {statement}]$ is the Iverson bracket which evaluates to 1 when statement is true. There is no loss for the catch-all background class ($u=0$).
     - $L_{loc} = \underset{i \in {x, y, w, h}}{\sum} \text{smooth}_{L_1}(t_i^u - v_i)$ in which $\text{smooth}_{L_1}$ is the Huber function. This is more robust against outliers in the penalized $L_2$ loss in R-CNN. (cf scikit-learn topic of [Huber vs Ridge](http://scikit-learn.org/stable/auto_examples/linear_model/plot_huber_vs_ridge.html))
     - $\lambda$ controls the balance between the two task losses. Set to 1 in this study with normalized input. 
   - Stage wise training is less accurate (and less streamlined) than multitask training. 
@@ -243,9 +243,9 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - Training
   - Generating training data: anchors are assigned 1 if IoU > 0.7 or highest IoU with a given groundtruth box.
   - Loss function: multitask (cls+reg)
-    \\[
-    L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^*) \		+ \lambda \frac{1}{N_{reg}} \sum_i p_i^* L_{reg}(t_i, t_i^*)
-    \\]
+    $$
+    L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^*) + \lambda \frac{1}{N_{reg}} \sum_i p_i^* L_{reg}(t_i, t_i^*)
+    $$
     where groundtruth label $p_i^*$ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $t_i^*$ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $L_{reg} = R(t_i - t_i^*)$ where $R$ is the robust loss function (smooth $L_1$, Huber).
   - Fine-tuning VGG (13 conv + 3 FC) from conv3_1 and up as the shallower layers are very generic. Fine-tuning whole network for ZF (5 + 3).
   - 4-step Alternating training:
@@ -275,9 +275,9 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     - Confidence of bounding box is defined as $\text{Pr(Object)} \times \text{IOU}_{pred}^{truth}$. If no object appears in the bb^(==how to decide? IOU threshold?==), the confidence should be 0; otherwise it should be the IOU with groundtruth. (this is implicitly reflected in the training by assigning label).
     - Each $C$ class probability is defined as $\text{Pr(Class}_{\textit i}\text{ | Object)}$. These is one set of probability for one gird cell, regardless of number of bb $B$.
     - At test time, the two numbers are multiplied, 
-      \\[
+      $$
       Pr(Class_i | Object) \times Pr(Object) \times \text{IOU}_{pred}^{truth} = Pr(Class_i) \times \text{IOU}_{pred}^{truth}
-      \\]
+      $$
       which gives the class-specific confidence score for each box. 
   - All predictions are encoded as an $S \times S \times (B \times 5 + C)$ tensor. For VOC, S=7, B=2, C=20, thus output dimension is 7 x 7 x 30.
     ![]({{ site.baseurl }}/images/yolo_arch2.png)
@@ -319,11 +319,11 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
   - YOLOv2 uses k-means clustering on the box dimensions of the **training set** to automatically find good priors of the anchor boxes (improves upon the hand-picked anchor boxes in faster R-CNN and SDD). $k=5$ is selected as it achieves good average IOU with relatively small k. 
   - k-means clustering metric
     \\[
-    d(box, centroid) = 1 - IOU (box, centroid)
+    d(box, centroid) = 1 - \text{IOU} (box, centroid)
     \\]
     instead of Euclidean distance (which would bias against large boxes).
   - Predicts location coordinates relative to the location of the grid cell. This bounds the ground truth to (0, 1). This improves upon predicting offset wrt anchor boxes. ^(==why?==)
-- [tidbits] Speed is not just FLOPs. Speed can also be bottlenecked by data manipulation in memory. 
+- Tidbits Speed is not just FLOPs. Speed can also be bottlenecked by data manipulation in memory. 
 - From YOLOv2 to YOLO9000 
   - YOLO9000 is jointly trained on classification and detection. 
   - Labels in different datasets are not mutually exclusive, resolved by a  **multi-label model** method.
@@ -558,7 +558,7 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - The model is applied densely at multiple locations, with a constant stride but different scales, but the input patch is always fixed-sized. 
   - The predicted mask is binarized with a global threshold (0.1 or 0.2 for different datasets).
   - The accuracy of the model is benchmarked on the metric of IoU, for mask and for bounding boxes. Note that the model is not trained directly on the accuracy.
-- [tidbits] selective search uses superpixel merging for region proposal. See [review by Hosang et al](https://arxiv.org/abs/1502.05082). 
+- Tidbits selective search uses superpixel merging for region proposal. See [review by Hosang et al](https://arxiv.org/abs/1502.05082). 
 
 ### SharpMask
 - [Learning to Refine Object Segments](https://arxiv.org/abs/1603.08695)
@@ -603,8 +603,8 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Each object proposal has n GT labels $k_u^*$, one per threshold $u$. Each term $p_u$ is predicted by a separate classifier head.
     ![]({{ site.baseurl }}/images/multipath_arch.png)
 - DeepMask performs object proposal with higher quality than selective search, so that the bb regression in Fast R-CNN only gives marginally better results. 
-- [tidbits] Dropout and weight decay only one is needed to achieve good regularization. 
-- [tidbits] Data and model parallelism. 4 GPU machines help motivate the design of 4 foveal regions due to the ease of implementation.
+- Tidbits Dropout and weight decay only one is needed to achieve good regularization. 
+- Tidbits Data and model parallelism. 4 GPU machines help motivate the design of 4 foveal regions due to the ease of implementation.
 
 ### Mask R-CNN
 - [Mask R-CNN](https://arxiv.org/abs/1703.06870)
@@ -636,7 +636,7 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - A single class-agnostic mask is nearly as effective as class-specific masks. Again this demonstrates the effective decoupling of classification and segmentation.
   - RoIAlign layer is critical for successful pixel level localization, including masks and keypoints.
   - Training on a multi-task loss function generally helps all tasks. This means the system can leverage labeled information from multiple tasks. Learning jointly enables a unified system to efficiently predict all outputs simultaneously.
-- [Tidbits] 
+- Tidbits 
   - Mask R-CNN system can be quickly prototyped within a day
   - Multi-scale training (on randomly resized images) to reduce overfitting (pre-training backbone also helps) but inference is only on the original scale.
   - Use [Juxtapose JS](https://juxtapose.knightlab.com/) to showcase image segmentation results on websites.
@@ -670,7 +670,7 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
 - Benchmark:
   - The speedup benchmark is based on the number of clicks required to generate the polygon mask.
   - Limitation: the simulated annotator always feeds GT to the polygon RNN, i.e., the ideal situation, which a real annotator may not achieve.
-- [tidbits] How to use deconv to represent bilinear upsampling?
+- Tidbits How to use deconv to represent bilinear upsampling?
 
 ## Medical applications
 ### ChestX-ray8
