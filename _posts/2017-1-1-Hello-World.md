@@ -11,7 +11,10 @@ This is also my playground for testing out new ideas.
 
 ## Pictures
 Pictures can be inserted.
+以下は「三つ巴」の画像です。
+
 ![Mitsudomoe 三つ巴](../images/Hidari_mitsudomoe.svg.png)
+
 
 ## Equations
 Math equations should work too!
