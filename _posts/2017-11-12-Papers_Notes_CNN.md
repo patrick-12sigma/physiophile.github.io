@@ -9,7 +9,7 @@ This note covers advancement in computer vision/image processing powered by conv
 
 The papers are listed in in increasingly more challenging topics from **Image Classification** to **Object Detection** to **Segmentation**. 
 
-<!-- # Machine Learning Papers Notes (CNN) -->
+# Machine Learning Papers Notes (CNN)
 Compiled by Patrick Liu 
 
 <!-- vim-markdown-toc GFM -->
