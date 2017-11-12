@@ -9,7 +9,7 @@ This note covers advancement in computer vision/image processing powered by conv
 
 The papers are listed in in increasingly more challenging topics from **Image Classification** to **Object Detection** to **Segmentation**. 
 
-# Machine Learning Papers Notes (CNN)
+<!-- # Machine Learning Papers Notes (CNN) -->
 Compiled by Patrick Liu 
 
 <!-- vim-markdown-toc GFM -->
@@ -245,7 +245,6 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     \frac{\partial L}{\partial x_i} = \sum_r \sum_j [i=i^*(r,j)]\frac{\partial L}{\partial y_{rj}}
     \\]
     the gradient of a node $x_i$ only accumulate only if it was selected as the maximum in the ROI pooling process for $ y_{rj} $.
-
 - **Not all** layers need to be fine tuned.
   -  Ablation studies showed that initial layers (up to the first 3 in Fast R-CNN) does not contribute much to accuracy boost. Fine-tuning is more important for deeper layers. Shallow layers (particularly the first one) is generic and task-independent. This saves both time and memory and has great implications when GPU memory is limited.
   -  However training through ROI pooling layer is indeed important for improving prediction. Therefore using CNN as a blackbox feature extractor yields suboptimal results.
