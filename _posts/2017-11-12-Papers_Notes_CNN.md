@@ -33,8 +33,8 @@ Evolution from AlexNet, VGGNet, GoogLeNet (Inception) to ResNet.
     - **Dropout**: neurons that are dropped out do not contribute to forward pass nor back-propagation. This reduces complex co-adaptations of neurons, as a neuron cannot reply on the presence of particular other neurons. It roughly doubles the training time when dropout probability p=0.5. 
   - Loss function: multinomial logistic regression objective (softmax)
   - Learning update with momentum 0.9 and weight decay 0.0005
-    1. $v_{i+1} := 0.9 v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \left< \frac{\partial L}{\partial w} \mid _{w_i} \right>_{D_i} $
-      2. $w_{i+1} := w_i + v_{i+1}$
+    1. $ v_{i+1} := 0.9 v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \left< \frac{\partial L}{\partial w} \mid _{w_i} \right>_{D_i} $
+      2. $ w_{i+1} := w_i + v_{i+1} $
   - Learning schedule: divide learning rate by 10 when validation error rate stopped improving 
 - Results:
   - 1st conv layers learned a variety of frequency- and orientation-selective kernels and colored blobs
@@ -191,7 +191,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     \\]
     - $L_{cls}(p, u) = -\log p_u$ (log loss function, [special case of cross entropy](https://jamesmccaffrey.wordpress.com/2016/09/25/log-loss-and-cross-entropy-are-almost-the-same/))
     - $[\text {statement}]$ is the Iverson bracket which evaluates to 1 when statement is true. There is no loss for the catch-all background class ($u=0$).
-    - $ L_{loc} = \underset{i \in {x, y, w, h}}{\sum} \text{smooth}_{L_1}(t_i^u - v_i) $ in which $\ text{smooth}_{L_1} $ is the Huber function. This is more robust against outliers in the penalized $L_2$ loss in R-CNN. (cf scikit-learn topic of [Huber vs Ridge](http://scikit-learn.org/stable/auto_examples/linear_model/plot_huber_vs_ridge.html))
+    - $ L_{loc} = \underset{i \in {x, y, w, h}}{\sum} \text{smooth}_{L_1}(t_i^u - v_i) $ in which $ \text{smooth}_{L_1} $ is the Huber function. This is more robust against outliers in the penalized $L_2$ loss in R-CNN. (cf scikit-learn topic of [Huber vs Ridge](http://scikit-learn.org/stable/auto_examples/linear_model/plot_huber_vs_ridge.html))
     - $\lambda$ controls the balance between the two task losses. Set to 1 in this study with normalized input. 
   - Stage wise training is less accurate (and less streamlined) than multitask training. 
   - Training on classification and detection simultaneously **(multitask training) improves pure classification accuracy**. This means the bounding box data used for detection also holds informtion relevant to classification.
@@ -201,10 +201,10 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 
 - ROI pooling layers
   - Applied independently to each feature map channel as in standard max pooling.
-  - Each ROI pooling layer computes $ y_{rj} = x_{i^*(r,j)} $ where $ r^*(r,j) = \text{argmax}_{i' \in \mathcal{R}(i, j)}x_{i'} $, $ \mathcal{R}(r, j) $ is the index set over which $ y_{rj} $ max pools.
+  - Each ROI pooling layer computes $ y_{rj} = x_{i^+(r,j)} $ where $ r^+(r,j) = \text{argmax}_{i' \in \mathcal{R}(i, j)}x_{i'} $, $ \mathcal{R}(r, j) $ is the index set over which $ y_{rj} $ max pools.
   - Backpropagation: 
     \\[
-    \frac{\partial L}{\partial x_i} = \sum_r \sum_j [i=i^*(r,j)]\frac{\partial L}{\partial y_{rj}}
+    \frac{\partial L}{\partial x_i} = \sum_r \sum_j [i=i^+(r,j)]\frac{\partial L}{\partial y_{rj}}
     \\]
     the gradient of a node $x_i$ only accumulate only if it was selected as the maximum in the ROI pooling process for $ y_{rj} $.
 
@@ -244,9 +244,9 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
   - Generating training data: anchors are assigned 1 if IoU > 0.7 or highest IoU with a given groundtruth box.
   - Loss function: multitask (cls+reg)
     \\[
-    L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^*) + \lambda \frac{1}{N_{reg}} \sum_i p_i^* L_{reg}(t_i, t_i^*)
+    L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^+) + \lambda \frac{1}{N_{reg}} \sum_i p_i^+ L_{reg}(t_i, t_i^+)
     \\]
-    where groundtruth label $ p_i^* $ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $ t_i^* $ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $ L_{reg} = R(t_i - t_i^*) $ where $R$ is the robust loss function (smooth $L_1$, Huber).
+    where groundtruth label $ p_i^+ $ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $ t_i^+ $ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $ L_{reg} = R(t_i - t_i^+) $ where $R$ is the robust loss function (smooth $L_1$, Huber).
   - Fine-tuning VGG (13 conv + 3 FC) from conv3_1 and up as the shallower layers are very generic. Fine-tuning whole network for ZF (5 + 3).
   - 4-step Alternating training:
     0. Fine-tune a ImageNet-pretrained model for RPN.
@@ -273,10 +273,10 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
   - Divides image to $S \times S$ grid
   - For each grid cell predicts $B$ bounding boxes and corresponding confidence, and $C$ class probabilities. 
     - Confidence of bounding box is defined as $ \text{Pr(Object)} \times \text{IOU}_{pred}^{truth} $. If no object appears in the bb^(==how to decide? IOU threshold?==), the confidence should be 0; otherwise it should be the IOU with groundtruth. (this is implicitly reflected in the training by assigning label).
-    - Each $C$ class probability is defined as $ \text{Pr(Class}_{\textit i}\text{ | Object)} $. These is one set of probability for one gird cell, regardless of number of bb $B$.
+    - Each $C$ class probability is defined as $ \text{Pr(Class}_{\textit i}\text{ \mid Object)} $. These is one set of probability for one gird cell, regardless of number of bb $B$.
     - At test time, the two numbers are multiplied, 
       \\[
-      Pr(Class_i | Object) \times Pr(Object) \times \text{IOU}_{pred}^{truth} = Pr(Class_i) \times \text{IOU}_{pred}^{truth}
+      Pr(Class_i | Object) \times Pr(Object) \times \text{IOU}_ {pred}^{truth} = Pr(Class_i) \times \text{IOU} _{pred}^{truth}
       \\]
       which gives the class-specific confidence score for each box. 
   - All predictions are encoded as an $S \times S \times (B \times 5 + C)$ tensor. For VOC, S=7, B=2, C=20, thus output dimension is 7 x 7 x 30.
@@ -601,10 +601,10 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Foveal field of view: 1x, 1.5x, 2x, 4x of the original proposal box all centered on the object proposal. For each FOV, ROI pooling is used to generate the fixed sized feature maps. (the architecture diagram is a bit misleading). **Multiple ROI for pooling.**
   - Integral loss: 
     - PASCAL and ImageNet only considers if the bb has over 0.5 IOU with the GT, while COCO averages AP cross IOU threshold between .50 and .95. **COCO incentivizes better object localization.**
-    - Ideally proposals with higher overlap to the GT should be scored more highly. Therefore, instead of a single $ L_{cls}(p, k^*) = -\log p(k^*) $, classification loss for the GT class $k^*$ at IOU threshold $u=0.5$, 
-      $$ \int_{50}^{100} L_{cls}(p, k_u^*) du $$
+    - Ideally proposals with higher overlap to the GT should be scored more highly. Therefore, instead of a single $ L_{cls}(p, k^+) = -\log p(k^+) $, classification loss for the GT class $k^+$ at IOU threshold $u=0.5$, 
+      $$ \int_{50}^{100} L_{cls}(p, k_u^+) du $$
       In this formulation better localized objects are counted more times. For practical reasons (very few positive training samples when u>0.75), the integration is approximated as summation $\sum_u$ where $u \in \{50, 55, ..., 75\}$. 
-  - Each object proposal has n GT labels $k_u^*$, one per threshold $u$. Each term $p_u$ is predicted by a separate classifier head.
+  - Each object proposal has n GT labels $k_u^+$, one per threshold $u$. Each term $p_u$ is predicted by a separate classifier head.
     ![]({{ site.baseurl }}/images/multipath_arch.png)
 - DeepMask performs object proposal with higher quality than selective search, so that the bb regression in Fast R-CNN only gives marginally better results. 
 - Tidbits Dropout and weight decay only one is needed to achieve good regularization. 
