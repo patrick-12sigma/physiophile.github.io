@@ -18,4 +18,5 @@ Math equations should work too!
 $$ e^{i\pi} + 1 = 0 $$
 
 How about this is sigma $\sigma$.
-End of file?
+
+This is the end of This file.
