@@ -11,7 +11,7 @@ This is also my playground for testing out new ideas.
 
 ## Pictures
 Pictures can be inserted.
-![Mitsudomoe 三つ巴]({{ site.baseurl }}/images/Hidari_mitsudomoe.svg.png)
+![Mitsudomoe 三つ巴](../images/Hidari_mitsudomoe.svg.png)
 
 ## Equations
 Math equations should work too!

@@ -359,7 +359,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 #### Andrew Ng: Nuts and Bolts of Applying Deep Learning
 - The video is available on [youtube](https://www.youtube.com/watch?v=F1ka6a13S9I&t=4279s).
 - Decision making flowchart in tuning DL
-![](images/Decision Making in Applying Deep Learning - Page 1.svg)
+![](../images/Decision Making in Applying Deep Learning - Page 1.svg)
 - Make sure dev and test are from the same distribution. 
 	- Dev is the benchmark of tuning.
 - Bias vs Variance tradeoff
