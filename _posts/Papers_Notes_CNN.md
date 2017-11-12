@@ -1,3 +1,8 @@
+---
+layout: post
+title: Machine Learning Papers Notes (CNN)
+---
+
 # Machine Learning Papers Notes (CNN)
 Compiled by Patrick Liu 
 
@@ -5,34 +10,62 @@ This note covers advancement in computer vision/image processing powered by conv
 
 <!-- vim-markdown-toc GFM -->
 
-* [Image Classification](#image-classification)
-    * [AlexNet (NIPS 2012)](#alexnet-nips-2012)
-    * [VGG16 (ICLR 2015, 09/2014)](#vgg16-iclr-2015-092014)
-* [Object Detection](#object-detection)
-    * [Review blogs](#review-blogs)
-    * [R-CNN](#r-cnn)
-    * [OverFeat](#overfeat)
-    * [Fast R-CNN](#fast-r-cnn)
-    * [Faster R-CNN](#faster-r-cnn)
-    * [YOLO](#yolo)
-    * [YOLOv2 and YOLO9000](#yolov2-and-yolo9000)
-    * [SSD](#ssd)
-    * [Extended reading](#extended-reading)
-* [Segmentation](#segmentation)
-    * [Review blogs](#review-blogs-1)
-    * [FCN (Fully connected networks)](#fcn-fully-connected-networks)
-    * [U-net](#u-net)
-    * [3D U-Net](#3d-u-net)
-    * [V-Net](#v-net)
-    * [FPN (Feature pyramid network)](#fpn-feature-pyramid-network)
-* [Instance/Object segmentation](#instanceobject-segmentation)
-    * [DeepMask](#deepmask)
-    * [SharpMask](#sharpmask)
-    * [MultiPath Network](#multipath-network)
-    * [Mask R-CNN](#mask-r-cnn)
-    * [Polygon RNN (2017 CVPR)](#polygon-rnn-2017-cvpr)
-* [Medical applications](#medical-applications)
-    * [ChestX-ray8](#chestx-ray8)
+* [Image Classification
+](#image-classification)
+    * [AlexNet (NIPS 2012)
+](#alexnet-nips-2012)
+    * [VGG16 (ICLR 2015, 09/2014)
+](#vgg16-iclr-2015-092014)
+* [Object Detection
+](#object-detection)
+    * [Review blogs
+](#review-blogs)
+    * [R-CNN
+](#r-cnn)
+    * [OverFeat
+](#overfeat)
+    * [Fast R-CNN
+](#fast-r-cnn)
+    * [Faster R-CNN
+](#faster-r-cnn)
+    * [YOLO
+](#yolo)
+    * [YOLOv2 and YOLO9000
+](#yolov2-and-yolo9000)
+    * [SSD
+](#ssd)
+    * [Extended reading
+](#extended-reading)
+* [Segmentation
+](#segmentation)
+    * [Review blogs
+](#review-blogs-1)
+    * [FCN (Fully connected networks)
+](#fcn-fully-connected-networks)
+    * [U-net
+](#u-net)
+    * [3D U-Net
+](#3d-u-net)
+    * [V-Net
+](#v-net)
+    * [FPN (Feature pyramid network)
+](#fpn-feature-pyramid-network)
+* [Instance/Object segmentation
+](#instanceobject-segmentation)
+    * [DeepMask
+](#deepmask)
+    * [SharpMask
+](#sharpmask)
+    * [MultiPath Network
+](#multipath-network)
+    * [Mask R-CNN
+](#mask-r-cnn)
+    * [Polygon RNN (2017 CVPR)
+](#polygon-rnn-2017-cvpr)
+* [Medical applications
+](#medical-applications)
+    * [ChestX-ray8
+](#chestx-ray8)
     * [CNN feature extractor for TB](#cnn-feature-extractor-for-tb)
 
 <!-- vim-markdown-toc -->
