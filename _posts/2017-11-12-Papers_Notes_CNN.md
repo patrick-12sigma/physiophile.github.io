@@ -160,8 +160,8 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     ![]({{ site.baseurl }}/images/overfeat_bb_regressor.png)
   - Each scale (6) and offset (3x3) generate a bounding box prediction, so there are a max of 54 bounding boxes for a single object. A **greedy merge strategy** are used to merge these bounding boxes together:
     1. $ (b'_1, b'_2) = \underset{b_1 \ne b_2 \in B}{argmin} \texttt{ match_score}(b_1, b_2) $
-      2. If $\texttt{match_score}(b'_1, b'_2) > t$, stop
-    2. Otherwise, set $B \leftarrow B\backslash {b'_1, b'_2} \cup \texttt{box_merge} (b'_1, b'_2)$
+      2. If $ \texttt{match_score}(b'_1, b'_2) > t $, stop
+    2. Otherwise, set $ B \leftarrow B\backslash {b'_1, b'_2} \cup \texttt{box_merge} (b'_1, b'_2) $
   - Compute `match_score` using sum of distance between centers of bounding boxes to the intersection of the boxes. `box_merge` compute the average of the bounding boxes coordinates.
   - This method is very robust to false positive than non-maximum suppresion by rewarding bounding box coherence.
 - Detection
@@ -191,7 +191,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     \\]
     - $L_{cls}(p, u) = -\log p_u$ (log loss function, [special case of cross entropy](https://jamesmccaffrey.wordpress.com/2016/09/25/log-loss-and-cross-entropy-are-almost-the-same/))
     - $[\text {statement}]$ is the Iverson bracket which evaluates to 1 when statement is true. There is no loss for the catch-all background class ($u=0$).
-    - $L_{loc} = \underset{i \in {x, y, w, h}}{\sum} \text{smooth}_{L_1}(t_i^u - v_i)$ in which $\text{smooth}_{L_1}$ is the Huber function. This is more robust against outliers in the penalized $L_2$ loss in R-CNN. (cf scikit-learn topic of [Huber vs Ridge](http://scikit-learn.org/stable/auto_examples/linear_model/plot_huber_vs_ridge.html))
+    - $ L_{loc} = \underset{i \in {x, y, w, h}}{\sum} \text{smooth}_{L_1}(t_i^u - v_i) $ in which $\ text{smooth}_{L_1} $ is the Huber function. This is more robust against outliers in the penalized $L_2$ loss in R-CNN. (cf scikit-learn topic of [Huber vs Ridge](http://scikit-learn.org/stable/auto_examples/linear_model/plot_huber_vs_ridge.html))
     - $\lambda$ controls the balance between the two task losses. Set to 1 in this study with normalized input. 
   - Stage wise training is less accurate (and less streamlined) than multitask training. 
   - Training on classification and detection simultaneously **(multitask training) improves pure classification accuracy**. This means the bounding box data used for detection also holds informtion relevant to classification.
@@ -201,12 +201,12 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 
 - ROI pooling layers
   - Applied independently to each feature map channel as in standard max pooling.
-  - Each ROI pooling layer computes $y_{rj} = x_{i^*(r,j)}$ where $r^*(r,j) = \text{argmax}_{i' \in \mathcal{R}(i, j)}x_{i'} $, $\mathcal{R}(r, j)$ is the index set over which $y_{rj}$ max pools.
+  - Each ROI pooling layer computes $ y_{rj} = x_{i^*(r,j)} $ where $ r^*(r,j) = \text{argmax}_{i' \in \mathcal{R}(i, j)}x_{i'} $, $ \mathcal{R}(r, j) $ is the index set over which $ y_{rj} $ max pools.
   - Backpropagation: 
     \\[
     \frac{\partial L}{\partial x_i} = \sum_r \sum_j [i=i^*(r,j)]\frac{\partial L}{\partial y_{rj}}
     \\]
-    the gradient of a node $x_i$ only accumulate only if it was selected as the maximum in the ROI pooling process for $y_{rj}$.
+    the gradient of a node $x_i$ only accumulate only if it was selected as the maximum in the ROI pooling process for $ y_{rj} $.
 
 - **Not all** layers need to be fine tuned.
   -  Ablation studies showed that initial layers (up to the first 3 in Fast R-CNN) does not contribute much to accuracy boost. Fine-tuning is more important for deeper layers. Shallow layers (particularly the first one) is generic and task-independent. This saves both time and memory and has great implications when GPU memory is limited.
@@ -243,9 +243,9 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - Training
   - Generating training data: anchors are assigned 1 if IoU > 0.7 or highest IoU with a given groundtruth box.
   - Loss function: multitask (cls+reg)
-    $$
+    \\[
     L({p_i}, {t_i}) = \frac{1}{N_{cls}} \sum_i L_{cls}(p_i, p_i^*) + \lambda \frac{1}{N_{reg}} \sum_i p_i^* L_{reg}(t_i, t_i^*)
-    $$
+    \\]
     where groundtruth label $ p_i^* $ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $ t_i^* $ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $ L_{reg} = R(t_i - t_i^*) $ where $R$ is the robust loss function (smooth $L_1$, Huber).
   - Fine-tuning VGG (13 conv + 3 FC) from conv3_1 and up as the shallower layers are very generic. Fine-tuning whole network for ZF (5 + 3).
   - 4-step Alternating training:
@@ -272,12 +272,12 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - Intended Workflow
   - Divides image to $S \times S$ grid
   - For each grid cell predicts $B$ bounding boxes and corresponding confidence, and $C$ class probabilities. 
-    - Confidence of bounding box is defined as $\text{Pr(Object)} \times \text{IOU}_{pred}^{truth}$. If no object appears in the bb^(==how to decide? IOU threshold?==), the confidence should be 0; otherwise it should be the IOU with groundtruth. (this is implicitly reflected in the training by assigning label).
-    - Each $C$ class probability is defined as $\text{Pr(Class}_{\textit i}\text{ | Object)}$. These is one set of probability for one gird cell, regardless of number of bb $B$.
+    - Confidence of bounding box is defined as $ \text{Pr(Object)} \times \text{IOU}_{pred}^{truth} $. If no object appears in the bb^(==how to decide? IOU threshold?==), the confidence should be 0; otherwise it should be the IOU with groundtruth. (this is implicitly reflected in the training by assigning label).
+    - Each $C$ class probability is defined as $ \text{Pr(Class}_{\textit i}\text{ | Object)} $. These is one set of probability for one gird cell, regardless of number of bb $B$.
     - At test time, the two numbers are multiplied, 
-      $$
+      \\[
       Pr(Class_i | Object) \times Pr(Object) \times \text{IOU}_{pred}^{truth} = Pr(Class_i) \times \text{IOU}_{pred}^{truth}
-      $$
+      \\]
       which gives the class-specific confidence score for each box. 
   - All predictions are encoded as an $S \times S \times (B \times 5 + C)$ tensor. For VOC, S=7, B=2, C=20, thus output dimension is 7 x 7 x 30.
     ![]({{ site.baseurl }}/images/yolo_arch2.png)
@@ -461,15 +461,15 @@ Goal: **Semantic segmentation** aims at grouping pixels in a semantically meanin
   - **Rand error**: non-local, region based method. More robust and best matches qualitative human judgement.
     - Define $p_{ij}$ as the probability that a pixel belonging to segment i in S (predicted segmentation) and segment j in T (ground truth segmentation). The joint probability distribution satisfies $\sum_{ij} p_{ij} = 1$ by definittion.
     - $s_i = \sum_j p_{ij}$ is the probability of a randomly chosen pixel belonging to segment i in S.
-    $$
+    \\[
     V^{Rand}_{split} = \frac{\sum_{ij}p_{ij}^2}{\sum_k t_k^2}, \quad\quad V^{Rand}_{merge} = \frac{\sum_{ij}p_{ij}^2}{\sum_k s_k^2}.
-    $$
+    \\]
     - The merge score $V^{Rand}_{merge}$ is the probability that two randomly chosen voxels belong to the same segment in T, given that they belong to the same segment in S. The merge score is higher when there are fewer merge errors. The split score is defined similarly.
     - The Rand F-score is defined as the weighted harmonic mean
-    $$
+    \\[
     V_\alpha^{Rand} = \frac {\sum_{ij} p^2_{ij}} 
     {\alpha \sum_k s_k^2 + (1-\alpha) \sum_k t_k^2}
-    $$
+    \\]
     Generally $\alpha = 0.5$, which weighs split and merge errors equally. The Rand score is closely related to the Rand index.
 
     ​
@@ -501,10 +501,12 @@ Goal: **Semantic segmentation** aims at grouping pixels in a semantically meanin
 - Objective function based on Dice coefficient
   - [Dice coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient): a statistic used for comparing the similarity of two samples
 
-  - $S={\frac {2|X\cap Y|}{|X|+|Y|}}$, which is related to Jaccard index (IoU), $J=\frac{|X \cap Y|}{|X \cup Y|}$, in that $S = 2J/(1+J)$ and both $S, J \in (0, 1)$.
+  - $ S={\frac {2|X\cap Y|}{|X|+|Y|}} $, which is related to Jaccard index (IoU), $ J=\frac{|X \cap Y|}{|X \cup Y|} $, in that $S = 2J/(1+J)$ and both $S, J \in (0, 1)$.
 
   - The improved loss function is:
-    $$ D = \frac{2\sum_i^N p_i g_i}  {\sum_i^N p_i^2 + \sum_i^N g_i^2}, $$ 
+  	\\[ 
+    D = \frac{2\sum_i^N p_i g_i}  {\sum_i^N p_i^2 + \sum_i^N g_i^2} 
+    \\]
 
     where predicted binary segmentation $p_i \in P$ and ground truth binary volume $g_i \in G$. This Dice coefficient can be differntiated $\partial D/\partial p_j$ with respect to the $j$-th voxel of prediction.
 
@@ -547,7 +549,9 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - The upsampling layer in the mask path is fixed (non-trainable) bilinear filter, not learned.
     ![]({{ site.baseurl }}/images/deepmask_arch.png)
 - Loss function
-  $$L(\theta) = \sum_k \left[\frac{1+y_k}{2 w^o h^o} \sum_{ij} \log(1+e^{m_k^{ij} f_{seg}^{ij}(x_k)}) + \lambda \log(1+e^{-y_k f_{score}(x_k)}) \right] $$
+  \\[
+  L(\theta) = \sum_k \left[\frac{1+y_k}{2 w^o h^o} \sum_{ij} \log(1+e^{m_k^{ij} f_{seg}^{ij}(x_k)}) + \lambda \log(1+e^{-y_k f_{score}(x_k)}) \right] 
+  \\]
   - Binary logistic regression loss.
   - The object score $y_k \in {+1, -1}$ indicates whether the input path fully contains a centered object. Thus the loss function does not penalize over negative examples. This is critical in generalizing beyond the object categories seen during training (otherwise the unseen object would be inadvertently penalized).
   - Note that $y_k = -1$ even if an object is partially present. 
