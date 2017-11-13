@@ -14,7 +14,7 @@ Pictures can be inserted.
 以下は「三つ巴」の画像です。
 
 ![Mitsudomoe 三つ巴](../images/Hidari_mitsudomoe.svg.png)
-
+<img src="../images/Hidari_mitsudomoe.svg.png" width="200">
 
 ## Equations
 Math equations should work too!
