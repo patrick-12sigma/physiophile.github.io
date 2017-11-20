@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Quick Notes on Deep Learning (CNN) Papers
-date: 2017-11-2
+date: 2017-11-20
 categories: [Deep Learning, CNN]
 ---
 
@@ -107,6 +107,20 @@ Evolution from AlexNet, VGGNet, GoogLeNet (Inception) to ResNet.
 - CNN can be used as a black-box feature extractor for various other tasks. 
   - CNN features + SVN for classification on PASCAL VOC and CALTECH datasets
   - CNN features for human action classification
+
+### DenseNet
+- [Densely Connected Convolutional Networks]()
+- Connectes each layer with every other layer directly in a feed-forward fashion.
+- Difference from ResNet and Inception 
+  - DenseNet concatenate features, while ResNet adds/accumulates features.
+  - Inception also concatenates feature maps, but DenseNet are simpler and more efficient
+- Directly encourages **feature reuse** Instead of  drawing representation power from very deep/wide networks. This makes the models easy to train and highly parameter efficient.
+- Architecture
+  - Transition layers (1x1 conv + 2x2 avg pooling) and dense blocks are used to reconcile the conflict between feature concatenation and pooling.
+  - Growth rate: number of feature maps generated in each layer. The $l^{th}$ layer has $k \times (l-1) + k_0$ feature maps where $k_0$ is the number of channels in the input images.
+  - Bottleneck layers uses 1x1 conv before 3x3 conv to reduce the number of input feature maps
+  - Compression at transition layers convers $m$ input feature maps to $\lfloor \theta m \rfloor$ output feature maps, where $\theta \in (0, 1]$ is the compression factor.
+  - 
 
 ## Object Detection
 Goal: Predict a label with confidence, as well as the coordinates of a box bounding each object in an image.
@@ -257,7 +271,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 ### Faster R-CNN
 - [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/abs/1506.01497)
 - Architecture
-  - **Region Proposal Network (RPN)** is trained for region proposal
+  - **Region Proposal Network (RPN)** is a fully connected network trained for region proposal
   - RPN is merged with Fast R-CNN with "attention" mechanism
     ![](../images/faster_rcnn_arch.png)
 - RPN history and properties
@@ -276,20 +290,20 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - Anchors
   - Translation-invariant: this helps to reduce network size. For VGG, the parameter count is 512 x (4+2) x 9.
   - Multi-scale: the design of multiscale anchors is a key component for sharing features without etra cost for addressig scales
-- Training
-  - Generating training data: anchors are assigned 1 if IoU > 0.7 or highest IoU with a given groundtruth box.
+- Training RPN
+  - Generating training data: anchors are assigned 1 if IoU > 0.7 or highest IoU with a given groundtruth box. Note that this is a binary classification problem (object vs background).
   - Loss function: multitask (cls+reg)
-    \\[
+    $$
     L({p_i}, {t_i}) = \frac{1}{N_ {cls}} \sum_i L_ {cls}(p_i, p_i^* ) + \lambda \frac{1}{N_ {reg}} \sum_i p_i^* L_ {reg}(t_i, t_i^* )
-    \\]
+    $$
     where groundtruth label $ p_i^ * $ = 1 if anchor is positive, 0 othewise. $p_i$ is the predicted probability of anchor i being an object, $t_i$ is the parameterized coordinates of predicted bounding box (transformation from anchor), and $ t_i^* $ is the corresponding groundtruth. $L_{cls}$ is log loss ($-\log p_i$, object vs background). $ L_{reg} = R(t_i - t_i^* ) $ where $R$ is the robust loss function (smooth $L_1$, Huber).
   - Fine-tuning VGG (13 conv + 3 FC) from conv3_1 and up as the shallower layers are very generic. Fine-tuning whole network for ZF (5 + 3).
-  - 4-step Alternating training:
+  - 4-step **Alternating training**:
     0. Fine-tune a ImageNet-pretrained model for RPN.
     1. Fine-tune a ImageNet-pretrained model for Fast R-CNN with RPN proposal. No sharing up to this point.
     2. Fix detector network conv layers (now shared layers) and fine-tune unique RPN layers
     3. Fix conv layers and fine-tune unique R-CNN layers
-  - Joint training by combining loss from two networks. This leads to close reults but up to 50% faster than alternating training.
+  - Joint training by combining loss from two networks. This leads to close results but up to 50% faster than alternating training.
   - Ignore cross-boundary anchors during training but enable during testing.
 - Number of region proposal by NMS
   - Non-maximum suppression (NMS) on proposal regions. This leads to ~2000 regions for an IOU threshold of 0.7 during NMS.
@@ -311,9 +325,9 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
     - Confidence of bounding box is defined as $ \text{Pr(Object)} \times \text{IOU}_{pred}^{truth} $. If no object appears in the bb^(==how to decide? IOU threshold?==), the confidence should be 0; otherwise it should be the IOU with groundtruth. (this is implicitly reflected in the training by assigning label).
     - Each $C$ class probability is defined as $ Pr(Class_ i \vert Object) $. These is one set of probability for one gird cell, regardless of number of bb $B$.
     - At test time, the two numbers are multiplied, 
-      \\[
+      $$
       Pr(Class_i \vert Object) \times Pr(Object) \times \text{IOU}_ {pred}^{truth} = Pr(Class_i) \times \text{IOU} _{pred}^{truth}
-      \\]
+      $$
       which gives the class-specific confidence score for each box. 
   - All predictions are encoded as an $S \times S \times (B \times 5 + C)$ tensor. For VOC, S=7, B=2, C=20, thus output dimension is 7 x 7 x 30.
     ![](../images/yolo_arch2.png)
@@ -497,16 +511,16 @@ Goal: **Semantic segmentation** aims at grouping pixels in a semantically meanin
   - **Rand error**: non-local, region based method. More robust and best matches qualitative human judgement.
     - Define $p_{ij}$ as the probability that a pixel belonging to segment i in S (predicted segmentation) and segment j in T (ground truth segmentation). The joint probability distribution satisfies $\sum_{ij} p_{ij} = 1$ by definition.
     - $s_i = \sum_j p_{ij}$ is the probability of a randomly chosen pixel belonging to segment i in S.
-    \\[
-    V^{Rand}_ {split} = \frac{\sum_ {ij}p_ {ij}^2}{\sum_k t_k^2}, \quad\quad V^{Rand}_ {merge} = \frac{\sum_ {ij}p_{ij}^2}{\sum_k s_k^2}.
-    \\]
+      \\[
+      V^{Rand}_ {split} = \frac{\sum_ {ij}p_ {ij}^2}{\sum_k t_k^2}, \quad\quad V^{Rand}_ {merge} = \frac{\sum_ {ij}p_{ij}^2}{\sum_k s_k^2}.
+      \\]
     - The merge score $V^{Rand}_{merge}$ is the probability that two randomly chosen voxels belong to the same segment in T, given that they belong to the same segment in S. The merge score is higher when there are fewer merge errors. The split score is defined similarly.
     - The Rand F-score is defined as the weighted harmonic mean
-    \\[
-    V_ \alpha^{Rand} = \frac {\sum_ {ij} p^2_ {ij}} 
-    {\alpha \sum_k s_k^2 + (1-\alpha) \sum_k t_k^2}
-    \\]
-    Generally $\alpha = 0.5$, which weighs split and merge errors equally. The Rand score is closely related to the Rand index.
+      \\[
+      V_ \alpha^{Rand} = \frac {\sum_ {ij} p^2_ {ij}} 
+      {\alpha \sum_k s_k^2 + (1-\alpha) \sum_k t_k^2}
+      \\]
+      Generally $\alpha = 0.5$, which weighs split and merge errors equally. The Rand score is closely related to the Rand index.
 
     ​
 ### 3D U-Net
@@ -540,7 +554,7 @@ Goal: **Semantic segmentation** aims at grouping pixels in a semantically meanin
   - $ S={\frac {2\vert X\cap Y \vert}{\vert X \vert +\vert Y \vert}} $, which is related to Jaccard index (IoU), $ J=\frac{\vert X \cap Y\vert}{\vert X \cup Y\vert} $, in that $S = 2J/(1+J)$ and both $S, J \in (0, 1)$.
 
   - The improved loss function is:
-  	\\[ 
+    \\[ 
     D = \frac{2\sum_i^N p_i g_i}  {\sum_i^N p_i^2 + \sum_i^N g_i^2} 
     \\]
 
