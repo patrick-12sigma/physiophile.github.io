@@ -65,7 +65,7 @@ tf.train.import_meta_graph(meta_graph, import_scope='new_f')
 ![](../images/copy_tf_graph_2.png)
 
 And clearing off the old graph.
-```python
+{% highlight python %}
 with tf.Graph().as_default():
     x, y = f()
     meta_graph = tf.train.export_meta_graph(export_scope='f')
@@ -73,7 +73,7 @@ with tf.Graph().as_default():
 with tf.Graph().as_default():
     tf.train.import_meta_graph(meta_graph, import_scope='new_f')
     tf.summary.FileWriter('/tmp/tensorboard', graph=tf.get_default_graph()).close()
-```
+{% endhighlight %}
 
 ![](../images/copy_tf_graph_3.png)
 
