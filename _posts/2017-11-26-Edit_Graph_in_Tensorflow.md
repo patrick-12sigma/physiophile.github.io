@@ -14,7 +14,7 @@ Editing graph in Tensorflow
 As appending new nodes is the only legal operation allowed by Tensorflow's Graph class, it is technically not possible to edit the graph. However, there is some workaround, for example, copying data from one graph, doing some editing on the fly and saving to another graph. In this way, the graph can be edited. 
 
 ### Put (part of) the original graph into a new name scope
-One possible use case of migrating the whole graph into a new name scope is as follows. I have trained the same network multiple times and now I want to combine them into different branches of one graph. The following example follows that from this post on [qiita](https://qiita.com/kzm4269/items/28b290c84f13710959ec) (日本語できてよかった！).
+One possible use case of migrating the whole graph into a new name scope is as follows. I have trained the same network multiple times and now I want to combine them into different branches of one graph. The following example follows that from this post on [qiita](https://qiita.com/kzm4269/items/28b290c84f13710959ec) (日本語できてよかったぜ！).
 
 Let's build one simple graph first. 
 
@@ -36,10 +36,12 @@ with tf.Graph().as_default():
     tf.summary.FileWriter('/tmp/tensorboard', graph=tf.get_default_graph()).close()
 ```
 
-In tensorboard, we can see the following graph.
+In tensorboard, we can see the following graph by running `tensorboard --port=8000 --logdir=/tmp/tensorboard`.
+
 ![](../images/copy_tf_graph_0.png)
 
 Of course, we can assign a scope to this: `with tf.variable_scope("f")`.
+
 ![](../images/copy_tf_graph_0_with_scope.png)
 
 It is well known that `tf.train.export_meta_graph` and `tf.train.import_meta_graph` can be used to save and restore graphs, but we can use `export_scope` and `import_scope` kwargs to manipulate the name scopes. For example, 
@@ -72,6 +74,7 @@ with tf.Graph().as_default():
     tf.train.import_meta_graph(meta_graph, import_scope='new_f')
     tf.summary.FileWriter('/tmp/tensorboard', graph=tf.get_default_graph()).close()
 ```
+
 ![](../images/copy_tf_graph_3.png)
 
 Now all the nodes in the original graph is placed under a new name scope "new_f".
