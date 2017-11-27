@@ -1,11 +1,11 @@
 ---
 layout: post
-title: The Markdown and LaTeX conflicts
+title: Editing Graph in Tensorflow
 date: 2017-11-26
 categories: [Machine Learning, Tensorflow]
 ---
 
-Solve the conflicts between Markdown and LaTeX 
+Editing graph in Tensorflow
 
 # Editing graph in Tensorflow
 
