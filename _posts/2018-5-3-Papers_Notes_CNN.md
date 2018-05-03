@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Quick Notes on Deep Learning (CNN) Papers
-date: 2017-11-20
+date: 2018-05-03
 categories: [Deep Learning, CNN]
 ---
 
@@ -42,6 +42,8 @@ Compiled by Patrick Liu
     * [MultiPath Network](#multipath-network)
     * [Mask R-CNN](#mask-r-cnn)
     * [Polygon RNN (2017 CVPR)](#polygon-rnn-2017-cvpr)
+* [General DL](#general_dl)
+    * ​
 
 <!-- vim-markdown-toc -->
 
@@ -120,7 +122,7 @@ Evolution from AlexNet, VGGNet, GoogLeNet (Inception) to ResNet.
   - Growth rate: number of feature maps generated in each layer. The $l^{th}$ layer has $k \times (l-1) + k_0$ feature maps where $k_0$ is the number of channels in the input images.
   - Bottleneck layers uses 1x1 conv before 3x3 conv to reduce the number of input feature maps
   - Compression at transition layers convers $m$ input feature maps to $\lfloor \theta m \rfloor$ output feature maps, where $\theta \in (0, 1]$ is the compression factor.
-  - 
+  - ​
 
 ## Object Detection
 Goal: Predict a label with confidence, as well as the coordinates of a box bounding each object in an image.
@@ -283,6 +285,7 @@ The evolution from R-CNN (regions with CNN-features), Fast R-CNN, Faster R-CNN, 
 - RPN architecture
   - Slide a $n \times n$ spatial window over extracted feature map.
      - At each location, k = 9 (3 scales x 3 aspect ratios) reference boxes (**anchors**) are initially proposed
+     - In the original faster RCNN paper, $n$ is set to 3. Note that this 3x3 spatial window corresponds to a receptive field of ~200x200 pixels in the original image. This may or may not be large enough to cover the entire object. See [MSCNN](#mscnn) for details. Therefore the first stage only as an object detection network is not accurate.
   - Each window is mapped to a lower dim feature (256-d for ZF and 512 for VGG)
   - The feature is fed into two sibling FC layers, one for **cls** and the other for **reg**
     - The reg network performs bounding box regression from an anchor to a nearby groundtruth box
@@ -638,6 +641,14 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Object proposal: AR, average recall.
   - Object detection: AP, average precision.
 
+### MSCNN
+- [A Unified Multi-scale Deep Convolutional Neural Network for Fast Object Detection](https://arxiv.org/pdf/1607.07155.pdf)
+- Drawbacks of faster RCNN
+  ![](../images/MSCNN_example1.png)
+- Architecture
+  ![](../images/MSCNN_arch.png)
+  - This is very similar to the idea of FPN, but FPN adds the decoder part to it. Largely speaking, FPN = MSCNN + UNet.
+
 
 ### MultiPath Network
 - [A MultiPath Network for Object Detection](https://arxiv.org/abs/1604.02135)
@@ -695,6 +706,20 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Multi-scale training (on randomly resized images) to reduce overfitting (pre-training backbone also helps) but inference is only on the original scale.
   - Use [Juxtapose JS](https://juxtapose.knightlab.com/) to showcase image segmentation results on websites.
 
+### Cascade RCNN
+- [Cascade R-CNN: Delving into High Quality Object Detection](https://arxiv.org/pdf/1712.00726.pdf)
+- Architecture
+  ![](../images/cascadercnn_arch.png)
+- Two issues with tradditional RCNN-like method if IOU threshold is raised.
+  - Overfitting during training, as low quality proposals dominates the training samples
+  - Inference time mismatch
+- Cascade RCNN solves the two issues by training a cascade of heads with increasingly higher thresholds (and with higher quality proposal inputs).
+  - Proposal quality improvement over cascade
+  - ![](../images/CascadeRCNN_distribution.png)
+  - Number of proposals remain the same over the cascade, but quality gradually improves (shifts to the right).
+- Cascade RCNN improves the score at high IOU thresholds. The improvement on low quality proposals (IOU~0.5) is limited.
+
+
 ### Polygon RNN (2017 CVPR)
 - [Annotating Object Instances with a Polygon-RNN](https://arxiv.org/abs/1704.05548)
 - Polygon RNN treats segmentation not as a **pixel-classification** problem but rather a **polygon prediction** task, mimicking how most of current datasets have been labelled. 
@@ -726,3 +751,14 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Limitation: the simulated annotator always feeds GT to the polygon RNN, i.e., the ideal situation, which a real annotator may not achieve.
 - Tidbits: How to use deconv to represent bilinear upsampling?
 
+
+## General DL
+
+### SPPNet
+
+- [Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition](https://arxiv.org/pdf/1406.4729.pdf)
+- Architecture
+  - ![](../images/spp_arch.png)
+- The main idea is to generalize pooling layer so that the output has a fixed dimension regardless of the input dimension. This work is before FCN and works well as a fixed-length feature extractor. 
+- This is the foundation for **ROI Pooling** layer for Fast and Faster RCNN.
+- In the coarsest pyramid level, the single bin covers the entire image. This is actually a global pooling opration. 
