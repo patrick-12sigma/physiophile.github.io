@@ -644,9 +644,9 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
 ### MSCNN
 - [A Unified Multi-scale Deep Convolutional Neural Network for Fast Object Detection](https://arxiv.org/pdf/1607.07155.pdf)
 - Drawbacks of faster RCNN
-  ![](../images/MSCNN_example1.png)
+  ![](../images/mscnn_example1.png)
 - Architecture
-  ![](../images/MSCNN_arch.png)
+  ![](../images/mscnn_arch.png)
   - This is very similar to the idea of FPN, but FPN adds the decoder part to it. Largely speaking, FPN = MSCNN + UNet.
 
 
@@ -715,7 +715,7 @@ Facebook AI Research (FAIR) has a series of progressive research on on DeepMask,
   - Inference time mismatch
 - Cascade RCNN solves the two issues by training a cascade of heads with increasingly higher thresholds (and with higher quality proposal inputs).
   - Proposal quality improvement over cascade
-  - ![](../images/CascadeRCNN_distribution.png)
+  - ![](../images/cascadercnn_distribution.png)
   - Number of proposals remain the same over the cascade, but quality gradually improves (shifts to the right).
 - Cascade RCNN improves the score at high IOU thresholds. The improvement on low quality proposals (IOU~0.5) is limited.
 
